@@ -23,6 +23,18 @@ def log_growl(msg):
 	except Exception:
 		log_std(msg)
 
+def log_osx(msg):
+	from AppKit import NSUserNotification, NSUserNotificationCenter
+	notification = NSUserNotification.alloc().init()
+	notification.setTitle_(msg)
+	NSUserNotificationCenter.defaultUserNotificationCenter().scheduleNotification_(notification)
+  # notification.setSubtitle_(str(subtitle))
+  # notification.setInformativeText_(str(text))
+  # notification.setSoundName_("NSUserNotificationDefaultSoundName")
+  # notification.setHasActionButton_(True)
+  # notification.setOtherButtonTitle_("View")
+  # notification.setUserInfo_({"action":"open_url", "value":url})
+
 def log_std(msg):
 	from AppKit import NSAlert, NSInformationalAlertStyle, NSRunningApplication, NSApplicationActivateIgnoringOtherApps
 
@@ -38,14 +50,19 @@ def log_std(msg):
 	alert.runModal()
 
 try:
-	# using Growl to notify about the results
-	# requires gntp
-	# install using pip install gntp
-	import gntp.notifier
-	log = log_growl
-except Exception:
-	# otherwise notify using 
-	log = log_std
+	objc.lookUpClass('NSUserNotificationCenter')
+	log = log_osx
+except objc.nosuchclass_error:
+	try:
+	  # using Growl to notify about the results
+	  # requires gntp
+	  # install using pip install gntp
+	  # TODO: add system notification
+	  import gntp.notifier
+	  log = log_growl
+	except Exception:
+	  # otherwise notify using 
+	  log = log_std
 
 og = omnigraffle.OmniGraffle()
 schema = og.active_document()
