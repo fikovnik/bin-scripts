@@ -66,7 +66,7 @@ canvas_name = schema.active_canvas_name()
 # Try to look for a file .<DocumentName>.omnigraffle_export
 export_info_fname = "Untitled"
 if schema_fname.rfind('.') != -1:
-  os.path.join(schema_dir, '.' + schema_fname[0:schema_fname.rindex('.')] + '.omnigraffle_export')
+  export_info_fname = os.path.join(schema_dir, '.' + schema_fname[0:schema_fname.rindex('.')] + '.omnigraffle_export')
 
 if os.path.exists(export_info_fname):
 	# if it exists it should contain one line that gives a relative path to a
